@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"os"
 	"path/filepath"
@@ -10,7 +9,7 @@ import (
 
 type jItem struct {
 	Name  string
-	Content string
+	Content []byte
 	Files []jItem
 }
 
@@ -24,15 +23,14 @@ func fileToJfile(path string) *jItem {
 	if err != nil {
 		log.Fatal(err)
 	}
-	content := string(bytes)
-	return &jItem{Name: filename, Content: content}
+	return &jItem{Name: filename, Content: bytes}
 }
 func jFileToFile(jfile jItem, exportPath string) {
 	if isJdir(jfile) {
 		log.Fatal("<FROM JFILE> ERROR: passed jdir to a jfile function (jfiletofile)")
 	}
 	fullpath := filepath.Join(exportPath, jfile.Name)
-	os.WriteFile(fullpath, []byte(jfile.Content), 0777)
+	os.WriteFile(fullpath, jfile.Content, 0777)
 }
 func dirToJdir(path string) *jItem {
 	dirpath := filepath.Base(path)
@@ -56,11 +54,9 @@ func JdirTodir(jdir jItem, exportPath string) {
 		log.Fatal("<FROM JFILE> ERROR: passed jfile to a jdir function (jdirtodir)")
 	}
 	fullpath := filepath.Join(exportPath, jdir.Name)
-	fmt.Println(jdir)
 	os.Mkdir(exportPath, 0777)
 	os.Mkdir(fullpath, 0777)
 	for _, item := range jdir.Files {
-		fmt.Println(item)
 		if isJdir(item){
 			JdirTodir(item, fullpath)
 		} else {
@@ -75,7 +71,6 @@ func readJson(path string) jItem {
 	}
 	obj := jItem{}
 	json.Unmarshal(bytes, &obj)
-	fmt.Println(obj)
 	return obj
 }
 func WriteJson(path string, obj any) {
@@ -87,7 +82,6 @@ func WriteJson(path string, obj any) {
 }
 func main() {
 	obj := readJson("main.json")
-	fmt.Println(obj)
 	JdirTodir(obj, "EXPORT")
 }
 
