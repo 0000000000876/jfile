@@ -1,2 +1,5 @@
-./test
-./EXPORT
+test/*
+EXPORT/*
+main.json
+main.exe
+jfile.old
