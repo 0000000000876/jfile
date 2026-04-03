@@ -4,4 +4,4 @@ Im trying to make it a go module rn.
 
 Any Issues or Pull requests welcome!
 
--- 0876
+-- jDev747
