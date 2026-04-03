@@ -1,8 +1,8 @@
-
+# folders to ignore
 test/*
 EXPORT/*
 
-
+# files to ignore
 /main.json
 /main.exe
 /jfile.old
