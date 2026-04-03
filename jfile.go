@@ -54,8 +54,7 @@ func JdirTodir(jdir jItem, exportPath string) {
 		log.Fatal("<FROM JFILE> ERROR: passed jfile to a jdir function (jdirtodir)")
 	}
 	fullpath := filepath.Join(exportPath, jdir.Name)
-	os.Mkdir(exportPath, 0777)
-	os.Mkdir(fullpath, 0777)
+	os.MkdirAll(fullpath, 0777)
 	for _, item := range jdir.Files {
 		if isJdir(item){
 			JdirTodir(item, fullpath)
@@ -70,7 +69,10 @@ func readJson(path string) jItem {
 		log.Fatal(err)
 	}
 	obj := jItem{}
-	json.Unmarshal(bytes, &obj)
+	err = json.Unmarshal(bytes, &obj)
+	if err != nil {
+		log.Fatal(err)
+	}
 	return obj
 }
 func WriteJson(path string, obj any) {
@@ -81,6 +83,7 @@ func WriteJson(path string, obj any) {
 	os.WriteFile(path, bytes, 0777)
 }
 func main() {
+	WriteJson("main.json", *dirToJdir("test"))
 	obj := readJson("main.json")
 	JdirTodir(obj, "EXPORT")
 }
